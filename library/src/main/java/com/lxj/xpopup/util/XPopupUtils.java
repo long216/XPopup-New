@@ -28,6 +28,8 @@ import android.os.Handler;
 import android.os.Looper;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.view.WindowInsets;
+import android.view.WindowMetrics;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
@@ -86,34 +88,60 @@ public class XPopupUtils {
     public static int getAppHeight(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
-        Point point = new Point();
-        wm.getDefaultDisplay().getSize(point);
-        return point.y;
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowMetrics metrics = wm.getCurrentWindowMetrics();
+            WindowInsets insets = metrics.getWindowInsets();
+            android.graphics.Insets systemInsets = insets.getInsets(
+                    WindowInsets.Type.systemBars());
+            return metrics.getBounds().height() - systemInsets.top - systemInsets.bottom;
+        } else {
+            Point point = new Point();
+            wm.getDefaultDisplay().getSize(point);
+            return point.y;
+        }
     }
 
     public static int getAppWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
-        Point point = new Point();
-        wm.getDefaultDisplay().getSize(point);
-        return point.x;
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowMetrics metrics = wm.getCurrentWindowMetrics();
+            WindowInsets insets = metrics.getWindowInsets();
+            android.graphics.Insets systemInsets = insets.getInsets(
+                    WindowInsets.Type.systemBars());
+            return metrics.getBounds().width() - systemInsets.left - systemInsets.right;
+        } else {
+            Point point = new Point();
+            wm.getDefaultDisplay().getSize(point);
+            return point.x;
+        }
     }
 
-    //屏幕的高度，包含状态栏，导航栏，看Rom实现
+    //屏幕的高度，包含状态栏，导航栏
     public static int getScreenHeight(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
-        Point point = new Point();
-        wm.getDefaultDisplay().getRealSize(point);
-        return point.y;
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowMetrics metrics = wm.getCurrentWindowMetrics();
+            return metrics.getBounds().height();
+        } else {
+            Point point = new Point();
+            wm.getDefaultDisplay().getRealSize(point);
+            return point.y;
+        }
     }
 
     public static int getScreenWidth(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         if (wm == null) return -1;
-        Point point = new Point();
-        wm.getDefaultDisplay().getRealSize(point);
-        return point.x;
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowMetrics metrics = wm.getCurrentWindowMetrics();
+            return metrics.getBounds().width();
+        } else {
+            Point point = new Point();
+            wm.getDefaultDisplay().getRealSize(point);
+            return point.x;
+        }
     }
 
     public static int dp2px(Context context, float dipValue) {
@@ -122,9 +150,19 @@ public class XPopupUtils {
     }
 
     public static int getStatusBarHeight(Window window) {
+        if (Build.VERSION.SDK_INT >= 30 && window != null) {
+            WindowInsets insets = window.getDecorView().getRootWindowInsets();
+            if (insets != null) {
+                return insets.getInsets(WindowInsets.Type.statusBars()).top;
+            }
+        }
+        // 降级方案
         Resources resources = Resources.getSystem();
         int resourceId = resources.getIdentifier("status_bar_height", "dimen", "android");
-        return resources.getDimensionPixelSize(resourceId);
+        if (resourceId > 0) {
+            return resources.getDimensionPixelSize(resourceId);
+        }
+        return 0;
     }
 
     /**
@@ -133,19 +171,20 @@ public class XPopupUtils {
      * @return the navigation bar's height
      */
     public static int getNavBarHeight(Window window) {
-        if(!isNavBarVisible(window)) return 0;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP && window!=null) {
-            View view = window.findViewById(android.R.id.navigationBarBackground);
-            if (view == null) return 0;
-            return view.getVisibility()==View.VISIBLE ? view.getHeight() : 0;
-        }else {
-            Resources res = Resources.getSystem();
-            int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
-            if (resourceId != 0) {
-                return res.getDimensionPixelSize(resourceId);
-            } else {
-                return 0;
+        if (Build.VERSION.SDK_INT >= 30 && window != null) {
+            WindowInsets insets = window.getDecorView().getRootWindowInsets();
+            if (insets != null) {
+                return insets.getInsets(WindowInsets.Type.navigationBars()).bottom;
             }
+        }
+        // 降级方案
+        if (!isNavBarVisible(window)) return 0;
+        Resources res = Resources.getSystem();
+        int resourceId = res.getIdentifier("navigation_bar_height", "dimen", "android");
+        if (resourceId != 0) {
+            return res.getDimensionPixelSize(resourceId);
+        } else {
+            return 0;
         }
     }
 
@@ -256,6 +295,20 @@ public class XPopupUtils {
         if (window == null) return 0;
         final View decorView = window.getDecorView();
         if (decorView == null) return 0;
+        // API 30+ 使用 WindowInsets 判断键盘是否可见
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsets insets = decorView.getRootWindowInsets();
+            if (insets != null) {
+                boolean imeVisible = insets.isVisible(WindowInsets.Type.ime());
+                if (imeVisible) {
+                    android.graphics.Insets imeInsets = insets.getInsets(WindowInsets.Type.ime());
+                    android.graphics.Insets navInsets = insets.getInsets(WindowInsets.Type.navigationBars());
+                    return Math.max(0, imeInsets.bottom - navInsets.bottom);
+                }
+                return 0;
+            }
+        }
+        // 降级方案
         final Rect outRect = new Rect();
         decorView.getWindowVisibleDisplayFrame(outRect);
         int delta = Math.abs(decorView.getBottom() - outRect.bottom);
@@ -359,6 +412,13 @@ public class XPopupUtils {
 
     public static boolean isNavBarVisible(Window window) {
         if (window == null) return false;
+        if (Build.VERSION.SDK_INT >= 30) {
+            WindowInsets insets = window.getDecorView().getRootWindowInsets();
+            if (insets != null) {
+                return insets.isVisible(WindowInsets.Type.navigationBars());
+            }
+        }
+        // 降级方案：遍历 decorView 子 View
         boolean isVisible = false;
         ViewGroup decorView = (ViewGroup) window.getDecorView();
         if (decorView == null) return false;
@@ -381,7 +441,6 @@ public class XPopupUtils {
         if (isVisible) {
             // 对于三星手机，android10以下非OneUI2的版本，比如 s8，note8 等设备上，
             // 导航栏显示存在bug："当用户隐藏导航栏时显示输入法的时候导航栏会跟随显示"，会导致隐藏输入法之后判断错误
-            // 这个问题在 OneUI 2 & android 10 版本已修复
             if (FuckRomUtils.isSamsung()
                     && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1
                     && Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {

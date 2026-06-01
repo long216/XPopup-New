@@ -146,16 +146,15 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.test:
+            int id = v.getId();
+            if (id == R.id.test) {
                 new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true)
                         .hasStatusBar(false)
                         .isRequestFocus(false)
                         .asCustom(new CustomCenter1(getContext()))
                         .show();
-                break;
-            case R.id.btnShowConfirm: //带确认和取消按钮的弹窗
+            } else if (id == R.id.btnShowConfirm) { //带确认和取消按钮的弹窗
                 /*if(popupView==null)*/
                 popupView = new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true)
@@ -174,8 +173,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                     }
                                 }, null, true);
                 popupView.show();
-                break;
-            case R.id.btnBindLayout:  //复用项目中已有布局，使用XPopup已有的交互能力
+            } else if (id == R.id.btnBindLayout) { //复用项目中已有布局，使用XPopup已有的交互能力
                 new XPopup.Builder(getContext())
                         .autoOpenSoftInput(true)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -188,8 +186,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                     }
                                 }, null, R.layout.my_confim_popup) //最后一个参数绑定已有布局
                         .show();
-                break;
-            case R.id.btnShowInputConfirm: //带确认和取消按钮，输入框的弹窗
+            } else if (id == R.id.btnShowInputConfirm) { //带确认和取消按钮，输入框的弹窗
                 new XPopup.Builder(getContext())
                         .hasStatusBarShadow(false)
                         .hasNavigationBar(false)
@@ -209,8 +206,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                     }
                                 })
                         .show();
-                break;
-            case R.id.btnShowCenterList: //在中间弹出的List列表弹窗
+            } else if (id == R.id.btnShowCenterList) { //在中间弹出的List列表弹窗
                 new XPopup.Builder(getContext())
 //                        .maxWidth(600)
                         .maxHeight(800)
@@ -229,8 +225,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                 })
 //                        .bindLayout(R.layout.my_custom_attach_popup) //自定义布局
                         .show();
-                break;
-            case R.id.btnShowCenterListWithCheck: //在中间弹出的List列表弹窗，带选中效果
+            } else if (id == R.id.btnShowCenterListWithCheck) { //在中间弹出的List列表弹窗，带选中效果
                 new XPopup.Builder(getContext())
 //                            .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asCenterList("请选择一项", new String[]{"条目1", "条目2", "条目3", "条目4"},
@@ -242,8 +237,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                     }
                                 })
                         .show();
-                break;
-            case R.id.btnShowLoading: //在中间弹出的Loading加载框
+            } else if (id == R.id.btnShowLoading) { //在中间弹出的Loading加载框
                 if (loadingPopup == null) {
                     loadingPopup = (LoadingPopupView) new XPopup.Builder(getContext())
                             .dismissOnBackPressed(false)
@@ -274,8 +268,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         toast("我消失了！！！");
                     }
                 });
-                break;
-            case R.id.btnShowBottomList: //从底部弹出，带手势拖拽的列表弹窗
+            } else if (id == R.id.btnShowBottomList) { //从底部弹出，带手势拖拽的列表弹窗
                 popupView = new XPopup.Builder(getContext())
                         .isDarkTheme(true)
                         .hasShadowBg(false)
@@ -296,8 +289,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                 });
 
                 popupView.show();
-                break;
-            case R.id.btnShowBottomListWithCheck: //从底部弹出，带手势拖拽的列表弹窗,带选中效果
+            } else if (id == R.id.btnShowBottomListWithCheck) { //从底部弹出，带手势拖拽的列表弹窗,带选中效果
                 new XPopup.Builder(getContext())
                         .isViewMode(true)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
@@ -310,8 +302,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                                     }
                                 })
                         .show();
-                break;
-            case R.id.btnCustomBottomPopup: //自定义的底部弹窗
+            } else if (id == R.id.btnCustomBottomPopup) { //自定义的底部弹窗
                 new XPopup.Builder(getContext())
                         .hasShadowBg(false)
                         .moveUpToKeyboard(false) //如果不加这个，评论弹窗会移动到软键盘上面
@@ -320,18 +311,16 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
 //                        .isThreeDrag(true) //是否开启三阶拖拽，如果设置enableDrag(false)则无效
                         .asCustom(new ZhihuCommentPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnPagerBottomPopup: //自定义的底部弹窗
+            } else if (id == R.id.btnPagerBottomPopup) { //自定义的底部弹窗
                 new XPopup.Builder(getContext())
 //                        .hasShadowBg(false)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .isViewMode(true)
                         .asCustom(new PagerBottomPopup(getContext()))
                         .show();
-                break;
-            case R.id.tv1: //依附于某个View的Attach类型弹窗
-            case R.id.tv2:
-            case R.id.tv3:
+            } else if (id == R.id.tv1) { //依附于某个View的Attach类型弹窗
+            } else if (id == R.id.tv2) {
+            } else if (id == R.id.tv3) {
 //                AttachPopupView attachPopupView = new XPopup.Builder(getContext())
 //                        .hasStatusBarShadow(false)
 ////                        .isRequestFocus(false)
@@ -357,8 +346,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .atView(v)
                         .asCustom(new CustomAttachPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnAttachPopup1: //水平方向的Attach弹窗，就像微信朋友圈的点赞弹窗那样
+            } else if (id == R.id.btnAttachPopup1) { //水平方向的Attach弹窗，就像微信朋友圈的点赞弹窗那样
                 new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
 //                        .offsetX(50) //偏移10
@@ -368,8 +356,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .atView(v)
                         .asCustom(new CustomAttachPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnAttachPopup2:
+            } else if (id == R.id.btnAttachPopup2) {
 //                customAttach2 = new CustomAttachPopup2(getContext());
                 if(customAttach2==null){
                     customAttach2 = (CustomAttachPopup2) new XPopup.Builder(getContext())
@@ -381,8 +368,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                     customAttach2.show();
                 }
 
-                break;
-            case R.id.btnBubbleAttachPopup1: //水平方向带气泡弹窗
+            } else if (id == R.id.btnBubbleAttachPopup1) { //水平方向带气泡弹窗
                 new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .atView(v)
@@ -401,8 +387,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
 ////                        .offsetX(XPopupUtils.dp2px(getContext(), 20))
 //                        .asCustom(new CustomBubbleAttachPopup(getContext()))
 //                        .show();
-                break;
-            case R.id.btnBubbleAttachPopup2: //垂直方向带气泡弹窗
+            } else if (id == R.id.btnBubbleAttachPopup2) { //垂直方向带气泡弹窗
                 new XPopup.Builder(getContext())
                         .hasShadowBg(false)
                         .isTouchThrough(true)
@@ -419,8 +404,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .hasShadowBg(false) // 去掉半透明背景
                         .asCustom(new CustomBubbleAttachPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnShowDrawerLeft: //像DrawerLayout一样的Drawer弹窗
+            } else if (id == R.id.btnShowDrawerLeft) { //像DrawerLayout一样的Drawer弹窗
                 new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
 //                        .asCustom(new CustomDrawerPopupView(getContext()))
@@ -430,8 +414,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .asCustom(new PagerDrawerPopup(getContext()))
 //                        .asCustom(new ListDrawerPopupView(getContext()))
                         .show();
-                break;
-            case R.id.btnShowDrawerRight:
+            } else if (id == R.id.btnShowDrawerRight) {
                 popupView = new XPopup.Builder(getContext())
 //                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .autoOpenSoftInput(true)
@@ -441,8 +424,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .setPopupCallback(new DemoXPopupListener())
                         .asCustom(new ListDrawerPopupView(getContext()));
                 popupView.show();
-                break;
-            case R.id.btnFullScreenPopup: //全屏弹窗，看起来像Activity
+            } else if (id == R.id.btnFullScreenPopup) { //全屏弹窗，看起来像Activity
                 popupView = new CustomFullScreenPopup(getContext());
                 new XPopup.Builder(getContext())
 //                        .hasStatusBar(false)
@@ -452,16 +434,14 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .autoOpenSoftInput(true)
                         .asCustom(popupView)
                         .show();
-                break;
-            case R.id.btnCustomEditPopup: //自定义依附在输入法之上的Bottom弹窗
+            } else if (id == R.id.btnCustomEditPopup) { //自定义依附在输入法之上的Bottom弹窗
                 new XPopup.Builder(getContext())
                         .autoOpenSoftInput(true)
 //                        .isViewMode(true)
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .asCustom(new CustomEditTextBottomPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnShowPosition1:
+            } else if (id == R.id.btnShowPosition1) {
                 new XPopup.Builder(getContext())
 //                        .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .offsetY(300)
@@ -471,8 +451,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .popupAnimation(PopupAnimation.TranslateFromLeft)
                         .asCustom(new QQMsgPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnShowPosition2:
+            } else if (id == R.id.btnShowPosition2) {
                 new XPopup.Builder(getContext())
                         .hasShadowBg(false)
                         .hasBlurBg(true)
@@ -481,18 +460,15 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         .offsetY(200)
                         .asCustom(new QQMsgPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnShowPosition3:
+            } else if (id == R.id.btnShowPosition3) {
                 new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true) //对于只使用一次的弹窗，推荐设置这个
                         .popupAnimation(PopupAnimation.TranslateFromTop)
                         .asCustom(new NotificationMsgPopup(getContext()))
                         .show();
-                break;
-            case R.id.btnMultiPopup:
+            } else if (id == R.id.btnMultiPopup) {
                 startActivity(new Intent(getContext(), DemoActivity.class));
-                break;
-            case R.id.btnShowInBackground:
+            } else if (id == R.id.btnShowInBackground) {
                 //申请悬浮窗权限
                 XPopup.requestOverlayPermission(getContext(), new XPermission.SimpleCallback() {
                     @Override
@@ -520,8 +496,7 @@ public class QuickStartDemo extends BaseFragment implements View.OnClickListener
                         ToastUtils.showShort("权限拒绝需要申请悬浮窗权限！");
                     }
                 });
-                break;
-        }
+                    }
     }
 
 
