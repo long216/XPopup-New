@@ -121,37 +121,33 @@ public class PartShadowDemo extends BaseFragment implements View.OnClickListener
     CustomPartShadowPopupView2 popupView2;
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.tv_all:
-            case R.id.tv_price:
-            case R.id.tv_sales:
+            int id = v.getId();
+            if (id == R.id.tv_all) {
+            } else if (id == R.id.tv_price) {
+            } else if (id == R.id.tv_sales) {
                 showPartShadow(v);
-                break;
-            case R.id.tv_filter:
+            } else if (id == R.id.tv_filter) {
                 new XPopup.Builder(getContext())
                         .isDestroyOnDismiss(true)
                         .popupPosition(PopupPosition.Right)//右边
 //                        .hasStatusBarShadow(true) //启用状态栏阴影
                         .asCustom(drawerPopupView)
                         .show();
-                break;
-            case R.id.tv_select:
+            } else if (id == R.id.tv_select) {
                 new XPopup.Builder(getContext())
                         .atView(v)
                         .autoOpenSoftInput(true)
                         .moveUpToKeyboard(false)
                         .asCustom(new CustomPartShadowPopupView(getContext()))
                         .show();
-                break;
-            case R.id.tvCenter:
+            } else if (id == R.id.tvCenter) {
                 new XPopup.Builder(getContext())
                         .atView(v)
                         .isViewMode(true)
                         .popupPosition(PopupPosition.Top)
                         .asCustom(new CustomPartShadowPopupView2(getContext(), Gravity.START))
                         .show();
-                break;
-            case R.id.tvCenter2:
+            } else if (id == R.id.tvCenter2) {
                 if(popupView2==null){
                     popupView2 = new CustomPartShadowPopupView2(getContext(), Gravity.END);
                 }
@@ -161,7 +157,6 @@ public class PartShadowDemo extends BaseFragment implements View.OnClickListener
                         .popupPosition(PopupPosition.Bottom)
                         .asCustom(popupView2)
                         .show();
-                break;
-        }
+                    }
     }
 }

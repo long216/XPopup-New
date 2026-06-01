@@ -1,6 +1,6 @@
 package com.lxj.xpopupdemo.custom;
 
-import android.content.Context;;
+import android.content.Context;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
