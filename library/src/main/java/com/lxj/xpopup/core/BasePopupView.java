@@ -367,11 +367,13 @@ public abstract class BasePopupView extends FrameLayout implements LifecycleObse
         if (popupInfo != null && popupInfo.isRequestFocus) {
             setFocusableInTouchMode(true);
             setFocusable(true);
-            // 此处焦点可能被内部的EditText抢走，也需要给EditText也设置返回按下监听
-            if (Build.VERSION.SDK_INT >= 28) {
-                addOnUnhandledKeyListener(this);
-            } else {
-                setOnKeyListener(new BackPressListener());
+            // Dialog 模式由宿主处理返回，避免新系统同时触发 View 监听造成重复回调。
+            if (popupInfo.isViewMode) {
+                if (Build.VERSION.SDK_INT >= 28) {
+                    addOnUnhandledKeyListener(this);
+                } else {
+                    setOnKeyListener(new BackPressListener());
+                }
             }
 
             //let all EditText can process back pressed.
@@ -385,12 +387,13 @@ public abstract class BasePopupView extends FrameLayout implements LifecycleObse
                 }
                 for (int i = 0; i < list.size(); i++) {
                     final EditText et = list.get(i);
-//                    addOnUnhandledKeyListener(et);
-                    if (Build.VERSION.SDK_INT >= 28) {
-                        addOnUnhandledKeyListener(et);
-                    }else {
-                        boolean hasSetKeyListener = XPopupUtils.hasSetKeyListener(et);
-                        if(!hasSetKeyListener) et.setOnKeyListener(new BackPressListener());
+                    if (popupInfo.isViewMode) {
+                        if (Build.VERSION.SDK_INT >= 28) {
+                            addOnUnhandledKeyListener(et);
+                        }else {
+                            boolean hasSetKeyListener = XPopupUtils.hasSetKeyListener(et);
+                            if(!hasSetKeyListener) et.setOnKeyListener(new BackPressListener());
+                        }
                     }
                     if (i == 0) {
                         if (popupInfo.autoFocusEditText) {
@@ -454,14 +457,18 @@ public abstract class BasePopupView extends FrameLayout implements LifecycleObse
 
     protected boolean processKeyEvent(int keyCode, KeyEvent event){
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_UP && popupInfo != null) {
-            if(onBackPressed()) return true;
-            if (popupInfo.isDismissOnBackPressed &&
-                    (popupInfo.xPopupCallback == null || !popupInfo.xPopupCallback.onBackPressed(BasePopupView.this))) {
-                dismissOrHideSoftInput();
-            }
+            handleBackPressed();
             return true;
         }
         return false;
+    }
+
+    protected void handleBackPressed() {
+        if (popupInfo == null || onBackPressed()) return;
+        if (popupInfo.isDismissOnBackPressed &&
+                (popupInfo.xPopupCallback == null || !popupInfo.xPopupCallback.onBackPressed(this))) {
+            dismissOrHideSoftInput();
+        }
     }
 
     class BackPressListener implements OnKeyListener {

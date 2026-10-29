@@ -7,11 +7,11 @@ import android.graphics.Color;
 import android.graphics.PixelFormat;
 import android.os.Build;
 import android.os.Bundle;
-import android.view.KeyEvent;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.window.OnBackInvokedCallback;
+import android.window.OnBackInvokedDispatcher;
 import androidx.annotation.NonNull;
 import com.lxj.xpopup.R;
 import com.lxj.xpopup.XPopup;
@@ -24,8 +24,36 @@ import com.lxj.xpopup.util.XPopupUtils;
  * 弹窗的宿主
  */
 public class FullScreenDialog extends Dialog {
+    private OnBackInvokedCallback backCallback;
+
     public FullScreenDialog(@NonNull Context context) {
         super(context, R.style._XPopup_TransparentDialog);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // 新系统的返回事件不再经过 View 的 KeyEvent 监听，必须交给弹窗执行退场动画。
+            backCallback = this::onBackPressed;
+            getOnBackInvokedDispatcher().registerOnBackInvokedCallback(
+                    OnBackInvokedDispatcher.PRIORITY_DEFAULT, backCallback);
+        }
+    }
+
+    @Override
+    protected void onStop() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && backCallback != null) {
+            getOnBackInvokedDispatcher().unregisterOnBackInvokedCallback(backCallback);
+            backCallback = null;
+        }
+        super.onStop();
+    }
+
+    @SuppressWarnings("deprecation")
+    @Override
+    public void onBackPressed() {
+        if (contentView != null) contentView.handleBackPressed();
     }
 
     @Override

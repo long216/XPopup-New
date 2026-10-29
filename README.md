@@ -85,9 +85,9 @@ Gif录制的有些卡顿，真机预览效果更佳。扫描二维码下载Demo�
 
 ## Gradle
 
-[![](https://jitpack.io/v/li-xiaojun/XPopup.svg)](https://jitpack.io/#li-xiaojun/XPopup)
+[![](https://jitpack.io/v/long216/XPopup-New.svg)](https://jitpack.io/#long216/XPopup-New)
 ```
-implementation 'com.github.li-xiaojun:XPopup:版本号看上面'
+implementation 'com.github.long216:XPopup-New:2.9.23'
 ```
 jitpack还要求在工程根目录的`build.gradle`中添加如下：
 ```
@@ -99,9 +99,9 @@ allprojects {
 }
 ```
 
-其中编译版本必须 >= 29：
+其中编译版本必须 >= 35：
 ```
-compileSdkVersion 29
+compileSdkVersion 35
 ```
 
 必须添加的依赖库，版本不用和我一致：
@@ -113,7 +113,7 @@ implementation 'androidx.recyclerview:recyclerview:1.2.1'
 
 xpopup依赖了`subsampling-scale-image-view`, 如果你也依赖了这个库并且版本冲突，可以做个exclude即可：
 ```groovy
-implementation ('com.github.li-xiaojun:XPopup:版本号看上面'){
+implementation ('com.github.long216:XPopup-New:2.9.23'){
   exclude group: "com.davemorrissey.labs", module: "subsampling-scale-image-view-androidx"
 }
 ```
